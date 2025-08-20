@@ -1,0 +1,1 @@
+# laravel-magiclink-otp-auth
