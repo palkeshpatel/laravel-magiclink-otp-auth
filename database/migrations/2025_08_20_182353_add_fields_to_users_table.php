@@ -1,0 +1,43 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('first_name')->nullable()->after('name');
+            $table->string('last_name')->nullable()->after('first_name');
+            $table->date('date_of_birth')->nullable()->after('email');
+            $table->string('contact_number')->nullable()->after('date_of_birth');
+            $table->boolean('profile_completed')->default(false)->after('contact_number');
+            $table->boolean('registration_completed')->default(false)->after('profile_completed');
+            $table->foreignId('invitation_id')->nullable()->constrained('user_invitations')->after('registration_completed');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['invitation_id']);
+            $table->dropColumn([
+                'first_name',
+                'last_name', 
+                'date_of_birth',
+                'contact_number',
+                'profile_completed',
+                'registration_completed',
+                'invitation_id'
+            ]);
+        });
+    }
+};
