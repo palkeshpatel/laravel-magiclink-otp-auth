@@ -1,66 +1,217 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Auth Coding Challenge - Magic Link & OTP Flows
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel application implementing two authentication flows as specified in the coding challenge requirements.
 
-## About Laravel
+## 🎯 Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This application demonstrates two distinct authentication flows:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Flow 1: Magic Link Authentication (Passwordless)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   Admin invites users via email with magic link
+-   Users click magic link to authenticate
+-   Complete user profile setup and preferences
 
-## Learning Laravel
+### Flow 2: Email + OTP Authentication
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   Users verify email against invitations
+-   OTP-based authentication
+-   Complete user profile setup and preferences
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🚀 Quick Start
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
 
-## Laravel Sponsors
+-   PHP 8.2 or higher
+-   Composer
+-   Node.js 18+ and npm
+-   MySQL 8.x or SQLite
+-   Mailhog (for email testing)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Installation
 
-### Premium Partners
+1. **Clone and setup**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    ```bash
+    git clone <repository>
+    cd react-auth-coding
+    composer install
+    npm install
+    ```
 
-## Contributing
+2. **Environment setup**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
-## Code of Conduct
+3. **Database setup**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    ```bash
+    # Update .env with your database credentials
+    php artisan migrate
+    php artisan db:seed
+    ```
 
-## Security Vulnerabilities
+4. **Start servers**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```bash
+    # Terminal 1: Laravel server
+    php artisan serve
 
-## License
+    # Terminal 2: Vite dev server
+    npm run dev
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. **Access the application**
+    - **Main Application**: http://127.0.0.1:8000/
+    - **Admin Panel**: http://127.0.0.1:8000/admin
+    - **API Endpoints**: http://127.0.0.1:8000/api
+
+## 📋 Application Flow
+
+### Home Page
+
+-   Simple interface with 2 buttons:
+    -   **Magic Link Authentication** (purple button)
+    -   **Email + OTP Authentication** (green button)
+
+### Magic Link Flow
+
+1. Admin invites user via `/api/invite`
+2. User receives email with magic link
+3. User clicks magic link → `/api/magic-link/user?token={token}`
+4. User completes profile setup
+5. User selects wellness interests
+6. User selects exactly 3 wellbeing pillars
+
+### OTP Flow
+
+1. User enters email on verification page
+2. System verifies email → `/api/verify-email?email={email}`
+3. System sends OTP → `/api/send-otp?email={email}`
+4. User enters OTP → `/api/verify-otp?email={email}&otp={otp}`
+5. User completes profile setup
+6. User selects wellness interests
+7. User selects exactly 3 wellbeing pillars
+
+## 📚 API Endpoints
+
+### Invitation
+
+```http
+POST /api/invite
+{
+    "email": "user@example.com",
+    "first_name": "John",
+    "last_name": "Doe"
+}
+```
+
+### Magic Link
+
+```http
+GET /api/magic-link/user?token={token}
+```
+
+### OTP Flow
+
+```http
+GET /api/verify-email?email={email}
+GET /api/send-otp?email={email}
+GET /api/verify-otp?email={email}&otp={otp}
+```
+
+### User Profile
+
+```http
+POST /api/user/profile
+{
+    "user_id": 1,
+    "password": "SecurePassword123!",
+    "dob": "1990-01-01",
+    "contact_number": "+1234567890",
+    "confirmation_flag": true
+}
+```
+
+### Wellness Interests
+
+```http
+GET /api/wellness-interests
+POST /api/wellness-interests
+{
+    "user_id": 1,
+    "wellness_interest_ids": [1, 2, 3]
+}
+```
+
+### Wellbeing Pillars
+
+```http
+GET /api/wellbeing-pillars
+POST /api/wellbeing-pillars
+{
+    "user_id": 1,
+    "wellbeing_pillar_ids": [1, 2, 3]
+}
+```
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+php artisan test
+
+# Test results: 7/7 tests passing
+```
+
+## 📁 Project Structure
+
+```
+react-auth-coding/
+├── app/Http/Controllers/Auth/     # Authentication controllers
+├── app/Models/                    # Eloquent models
+├── database/migrations/           # Database schema
+├── resources/js/pages/           # React components
+│   ├── Home.jsx                  # Main page with 2 buttons
+│   ├── MagicLink/               # Magic link flow
+│   ├── Otp/                     # OTP flow
+│   └── components/              # Shared components
+├── routes/api.php               # API routes
+└── tests/Feature/               # Tests
+```
+
+## 🔒 Security Features
+
+-   Single-use magic links with expiration
+-   Time-limited OTP codes (10 minutes)
+-   Password validation with Laravel defaults
+-   Email verification against invitation records
+-   Secure token generation
+-   Input validation and sanitization
+
+## 📝 Files for Interview
+
+-   ✅ **Complete Laravel application** with both flows
+-   ✅ **All API endpoints** implemented and tested
+-   ✅ **Frontend** with simple 2-button interface
+-   ✅ **Tests passing** (7/7)
+-   ✅ **Postman collection** (`postman_collection.json`)
+-   ✅ **Documentation** (this README)
+
+## 🎯 How to Test
+
+1. **Start the application** (see Quick Start above)
+2. **Create invitation**: Go to **http://127.0.0.1:8000/admin** and invite a user
+3. **Open main app**: **http://127.0.0.1:8000/**
+4. **Choose authentication method**:
+    - Click "Magic Link Authentication" for passwordless flow
+    - Click "Email + OTP Authentication" for OTP flow
+5. **Follow the flow** through profile setup and preferences
+6. **Test APIs** using the Postman collection
+
+---
+
+**Ready for Interview Review** 🚀
